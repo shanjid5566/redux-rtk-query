@@ -1,9 +1,22 @@
 import React from "react";
-import { useGetAllPostsQuery } from "../redux/services/posts/postsApi";
+import { useGetAllPostsQuery, useDeletePostMutation } from "../redux/services/posts/postsApi";
 import { Link } from "react-router";
 
 const Posts = () => {
   const { data, error, isLoading } = useGetAllPostsQuery();
+  const [deletePost, { isLoading: isDeleting }] = useDeletePostMutation();
+
+  const handleDelete = async (postId) => {
+    if (window.confirm('Are you sure you want to delete this post?')) {
+      try {
+        await deletePost(postId).unwrap();
+        alert('Post deleted successfully!');
+      } catch (error) {
+        console.error('Error deleting post:', error);
+        alert('Failed to delete post. Please try again.');
+      }
+    }
+  };
   // console.log(data)
 
   if (isLoading) return <div>Loading...</div>;
@@ -33,13 +46,19 @@ const Posts = () => {
               {post.title}
             </h2>
             <p className="text-gray-600">{post.body}</p>
-            <div className="mt-4">
+            <div className="mt-4 flex items-center justify-between gap-2">
               <Link
                 to={`/posts/${post.id}`}
                 className="text-blue-500 hover:underline"
               >
                 View Details
               </Link>
+              <button
+                onClick={() => handleDelete(post.id)}
+                className="px-3 py-1 bg-red-500 text-white text-sm font-medium rounded hover:bg-red-600 transition-colors duration-200"
+              >
+                Delete
+              </button>
             </div>
           </div>
         ))}
