@@ -1,5 +1,6 @@
 import React from "react";
 import { useGetAllPostsQuery } from "../redux/services/posts/postsApi";
+import { Link } from "react-router";
 
 const Posts = () => {
   const { data, error, isLoading } = useGetAllPostsQuery();
@@ -20,6 +21,11 @@ const Posts = () => {
               {post.title}
             </h2>
             <p className="text-gray-600">{post.body}</p>
+            <div className="mt-4">
+              <Link to={`/posts/${post.id}`} className="text-blue-500 hover:underline">
+                View Details
+              </Link>
+            </div>
           </div>
         ))}
       </div>
